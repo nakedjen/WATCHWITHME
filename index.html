@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch With Me</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --panel: rgba(20, 26, 36, 0.82);
+      --panel-strong: rgba(28, 35, 48, 0.96);
+      --text: #f8f3eb;
+      --muted: #c9c0b2;
+      --gold: #d8b16d;
+      --rose: #d8909d;
+      --sky: #87c8de;
+      --line: rgba(255,255,255,0.09);
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      --good: #98d39a;
+      --warn: #f2c36b;
+      --bad: #ef7f74;
+      --pill: rgba(255,255,255,0.05);
+      --glow: radial-gradient(circle at top left, rgba(216,177,109,0.18), transparent 35%), radial-gradient(circle at top right, rgba(216,144,157,0.13), transparent 28%), linear-gradient(180deg, #161b26, #0e1117 55%);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--glow);
+      background-attachment: fixed;
+    }
+
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 26px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(216,177,109,0.22), rgba(135,200,222,0.16));
+      border: 1px solid rgba(216,177,109,0.33);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      font-size: 24px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .brand .sub {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-main {
+      padding: 30px;
+      min-height: 260px;
+      position: relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hero-main p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 68ch;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .hero-side {
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(216,177,109,0.12), rgba(135,200,222,0.08));
+    }
+
+    h2, h3 { margin: 0 0 10px; }
+    .mini { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .stack { display: grid; gap: 10px; }
+
+    .mini-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 22px;
+      background: var(--panel-strong);
+    }
+
+    .section { margin-bottom: 18px; }
+    .section:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 15px;
+      background: rgba(255,255,255,0.035);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.32); }
+    textarea { min-height: 92px; resize: vertical; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-btn, .chip, .service-btn {
+      border: 1px solid var(--line);
+      background: var(--pill);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 13px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .pill-btn:hover, .service-btn:hover, .action:hover, .chip:hover { transform: translateY(-1px); }
+    .pill-btn.active, .service-btn.active {
+      background: linear-gradient(135deg, rgba(216,177,109,0.22), rgba(216,144,157,0.12));
+      border-color: rgba(216,177,109,0.42);
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .action {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font: inherit;
+      color: var(--text);
+      background: #2b3444;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action.primary {
+      background: linear-gradient(135deg, var(--gold), #c88c49);
+      color: #171717;
+      font-weight: 800;
+    }
+
+    .action.ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+    }
+
+    .results { padding: 22px; }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .taste-summary {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(216,177,109,0.12), rgba(135,200,222,0.08));
+      margin-bottom: 14px;
+    }
+
+    .taste-summary h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .rec {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .poster {
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, rgba(216,177,109,0.13), rgba(135,200,222,0.1));
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .rec-body { padding: 16px; }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .topline h3 {
+      font-size: 24px;
+      line-height: 1.07;
+      margin: 0;
+    }
+
+    .score-wrap { text-align: right; min-width: 92px; }
+    .score-big { font-size: 28px; font-weight: 900; color: var(--gold); line-height: 1; }
+    .score-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .reason, .why {
+      font-size: 15px;
+      line-height: 1.66;
+      margin-bottom: 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      cursor: default;
+      font-size: 12px;
+    }
+
+    .rec-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .rec-actions .action {
+      width: auto;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .memory {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .memory-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .history-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .history-poster {
+      aspect-ratio: 2 / 3;
+      background: linear-gradient(135deg, rgba(216,177,109,0.13), rgba(135,200,222,0.1));
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .history-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .history-body { padding: 10px 12px 12px; }
+    .history-title {
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .history-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 24px;
+      padding: 34px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .status.ok { color: var(--good); }
+    .status.warn { color: var(--warn); }
+    .status.bad { color: var(--bad); }
+
+    a { color: var(--sky); text-decoration: none; }
+
+    @media (max-width: 980px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+      .results-grid, .history-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🎬</div>
+        <div>
+          <h1>Watch With Me</h1>
+          <div class="sub">What should I watch tonight? Less slop. More taste. Built for people who know the difference.</div>
+        </div>
+      </div>
+      <div class="mini-badge">Watch With Me • browser demo with real TMDb data</div>
+    </div>
+
+    <div class="hero">
+      <section class="card hero-main">
+        <div class="eyebrow">Taste concierge with standards</div>
+        <h2 style="font-size:clamp(28px,4vw,46px); line-height:1.02; margin-bottom:14px;">A prettier little machine with real movie data.</h2>
+        <p>
+          This version fetches live titles from <strong>TMDb</strong>, scores them for quality, mood, and taste fit, and keeps a local memory of what you loved, liked, rejected, or would happily launch into the sea.
+        </p>
+      </section>
+      <aside class="card hero-side">
+        <h3>How to use it</h3>
+        <div class="stack mini">
+          <div>1. Paste a TMDb API Read Access Token or v3 API key.</div>
+          <div>2. Choose your mood, services, and anti-slop threshold.</div>
+          <div>3. Ask Watch With Me what to watch tonight.</div>
+          <div>4. Rate the results so the app learns your taste.</div>
+          <div>5. Save as <code>demo.html</code> and share it around.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="layout">
+      <section class="card panel">
+        <div class="section">
+          <label for="authToken">TMDb API token or API key</label>
+          <input id="authToken" type="text" placeholder="Paste TMDb Bearer token or v3 api_key here" />
+          <div class="status warn" id="authStatus">No token yet. The app can still show a local fallback catalog, but live results need a TMDb key.</div>
+        </div>
+
+        <div class="section row2">
+          <div>
+            <label>Region</label>
+            <select id="regionSelect">
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+            </select>
+          </div>
+          <div>
+            <label>Minimum quality</label>
+            <select id="qualityFloor">
+              <option value="7.0">7.0</option>
+              <option value="7.2">7.2</option>
+              <option value="7.5" selected>7.5</option>
+              <option value="8.0">8.0</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section">
+          <label>Tonight's mood</label>
+          <div class="pill-row" id="moodButtons"></div>
+        </div>
+
+        <div class="section">
+          <label>Energy level</label>
+          <div class="pill-row" id="energyButtons"></div>
+        </div>
+
+        <div class="section">
+          <label>Streaming services</label>
+          <div class="pill-row" id="serviceButtons"></div>
+        </div>
+
+        <div class="section">
+          <label for="likes">What you love</label>
+          <textarea id="likes" placeholder="Eternal Sunshine, Poor Things, emotionally risky documentaries, feminine chaos, strange beauty, desert velocity..."></textarea>
+        </div>
+
+        <div class="section">
+          <label for="avoid">What to avoid</label>
+          <textarea id="avoid" placeholder="generic true crime, empty prestige, algorithm bait, manipulative Oscar furniture, overlong franchise goo..."></textarea>
+        </div>
+
+        <div class="section row2">
+          <button class="action primary" id="recommendBtn">Recommend 3 films</button>
+          <button class="action" id="surpriseBtn">Surprise me</button>
+        </div>
+
+        <div class="section row2">
+          <button class="action ghost" id="seedBtn">Load cinephile taste</button>
+          <button class="action ghost" id="resetBtn">Reset taste memory</button>
+        </div>
+
+        <div class="status" id="fetchStatus">Ready. Live fetches use TMDb. Fallback mode uses a small built-in catalog.</div>
+      </section>
+
+      <section class="card results">
+        <div class="results-head">
+          <div>
+            <h2>Tonight's recommendations</h2>
+            <div class="mini">Three picks. One best bet. One wild card. One safe but excellent. No wallpaper cinema.</div>
+          </div>
+        </div>
+
+        <div id="tasteSummaryArea"></div>
+        <div id="resultsArea">
+          <div class="empty">Ask Watch With Me what to watch tonight. When you add a TMDb token, the app will fetch live movie data and watch-provider info.</div>
+        </div>
+
+        <div style="height:18px"></div>
+
+        <div class="results-head">
+          <div>
+            <h2>Taste memory</h2>
+            <div class="mini">The app remembers what you love, what you avoid, and which tags keep lighting up your little cinephile nerve endings.</div>
+          </div>
+          <button class="action ghost" id="toggleHistoryBtn" style="width:auto;">Open watch history</button>
+        </div>
+        <div class="memory" id="tasteMemory"></div>
+        <div id="historyDrawer" style="display:none;"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const fallbackCatalog = [
+      { id: 101, title: "The Green Knight", year: 2021, runtime: 130, quality: 7.5, voteCount: 2400, providers: ["Netflix"], moods: ["weird me out", "tender-knife", "wreck me"], energy: ["medium"], tags: ["mythic", "arthouse", "visual", "strange"], type: "Film", poster: "", overview: "A fever-dream quest movie with moss in its lungs and nerve in its bones.", source: "fallback" },
+      { id: 102, title: "Shirkers", year: 2018, runtime: 96, quality: 7.4, voteCount: 500, providers: ["Netflix"], moods: ["doc me", "weird me out", "delight me"], energy: ["medium", "low"], tags: ["documentary", "cinema", "meta", "female gaze"], type: "Documentary", poster: "", overview: "A lost-film mystery with cinephile perfume and a sharp little ghost stitched into every frame.", source: "fallback" },
+      { id: 103, title: "Procession", year: 2021, runtime: 122, quality: 7.6, voteCount: 300, providers: ["Netflix"], moods: ["doc me", "wreck me"], energy: ["medium", "high"], tags: ["documentary", "formal", "survivors", "serious"], type: "Documentary", poster: "", overview: "A formally daring documentary that lets survivors shape the work itself.", source: "fallback" },
+      { id: 104, title: "Descendant", year: 2022, runtime: 109, quality: 7.3, voteCount: 200, providers: ["Netflix"], moods: ["doc me", "tender-knife"], energy: ["medium", "low"], tags: ["documentary", "history", "community", "urgent"], type: "Documentary", poster: "", overview: "Patient, urgent, and deeply rooted in community memory.", source: "fallback" },
+      { id: 105, title: "Fire of Love", year: 2022, runtime: 93, quality: 7.6, voteCount: 1200, providers: ["Hulu", "Disney+"], moods: ["doc me", "delight me", "tender-knife"], energy: ["low", "medium"], tags: ["documentary", "archive", "love", "visual"], type: "Documentary", poster: "", overview: "Lava, longing, and archival footage that feels like a love letter to danger.", source: "fallback" }
+    ];
+
+    const moods = ["doc me", "weird me out", "wreck me", "delight me", "adrenaline", "tender-knife"];
+    const energies = ["low", "medium", "high"];
+    const services = ["Netflix", "Prime Video", "Hulu", "Max", "Disney+", "MUBI", "Criterion Channel", "Apple TV+"];
+    const providerNameMap = {
+      netflix: "Netflix",
+      "prime video": "Prime Video",
+      amazon: "Prime Video",
+      hulu: "Hulu",
+      max: "Max",
+      "disney plus": "Disney+",
+      disney: "Disney+",
+      mubi: "MUBI",
+      criterion: "Criterion Channel",
+      "criterion channel": "Criterion Channel",
+      "apple tv": "Apple TV+",
+      "apple tv+": "Apple TV+"
+    };
+
+    const defaultState = {
+      authToken: "",
+      selectedMood: "doc me",
+      selectedEnergy: "medium",
+      selectedServices: ["Netflix"],
+      region: "US",
+      qualityFloor: 7.5,
+      likesText: "",
+      avoidText: "",
+      historyDrawerOpen: false,
+      tasteProfile: {
+        watched: {},
+        love: {},
+        like: {},
+        pass: {},
+        neverAgain: {},
+        tags: {}
+      },
+      memoryMovies: {},
+      lastResults: []
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem("watchWithMeState");
+        return raw ? { ...structuredClone(defaultState), ...JSON.parse(raw) } : structuredClone(defaultState);
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem("watchWithMeState", JSON.stringify(state));
+    }
+
+    function tokenize(text) {
+      return (text || "")
+        .toLowerCase()
+        .split(/[^a-z0-9+]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function normalizeProviderName(name) {
+      const key = (name || "").toLowerCase().trim();
+      return providerNameMap[key] || name;
+    }
+
+    function getAuthHeaders() {
+      const token = state.authToken.trim();
+      if (!token) return null;
+      const looksLikeBearer = token.includes(".") || token.startsWith("eyJ") || token.startsWith("Bearer ");
+      if (looksLikeBearer) {
+        return { headers: { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` } };
+      }
+      return { query: `api_key=${encodeURIComponent(token)}` };
+    }
+
+    function buildTmdbUrl(path, params = {}) {
+      const auth = getAuthHeaders();
+      const url = new URL(`https://api.themoviedb.org/3${path}`);
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, v);
+      });
+      if (auth?.query) {
+        const [k, v] = auth.query.split("=");
+        url.searchParams.set(k, decodeURIComponent(v));
+      }
+      return { url: url.toString(), options: auth?.headers ? { headers: auth.headers } : {} };
+    }
+
+    async function fetchJson(path, params = {}) {
+      const { url, options } = buildTmdbUrl(path, params);
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error(`TMDb request failed: ${res.status}`);
+      return await res.json();
+    }
+
+    function guessTags(movie) {
+      const tags = new Set();
+      const text = `${movie.title} ${movie.overview || ""}`.toLowerCase();
+      const g = (movie.genres || []).map(x => (x.name || "").toLowerCase());
+      g.forEach(name => tags.add(name));
+      if (text.includes("documentary")) tags.add("documentary");
+      if (text.includes("love") || text.includes("romance")) tags.add("love");
+      if (text.includes("memory")) tags.add("memory");
+      if (text.includes("strange") || text.includes("surreal") || text.includes("dream")) tags.add("strange");
+      if (text.includes("grief") || text.includes("loss")) tags.add("grief");
+      if (text.includes("music") || text.includes("band") || text.includes("concert")) tags.add("music");
+      if (text.includes("war") || text.includes("revenge") || text.includes("violent")) tags.add("violent");
+      if (text.includes("family") || text.includes("daughter") || text.includes("mother")) tags.add("family");
+      if (text.includes("political") || text.includes("justice") || text.includes("history")) tags.add("political");
+      return [...tags];
+    }
+
+    function inferMoodAndEnergy(movie) {
+      const tags = movie.tags || [];
+      const type = movie.type;
+      const text = `${movie.title} ${movie.overview || ""}`.toLowerCase();
+      const moods = new Set();
+      const energy = new Set();
+
+      if (type === "Documentary") moods.add("doc me");
+      if (tags.some(t => ["fantasy", "science fiction", "mystery", "strange"].includes(t))) moods.add("weird me out");
+      if (tags.some(t => ["family", "romance", "grief", "drama"].includes(t)) || text.includes("love") || text.includes("loss")) moods.add("tender-knife");
+      if (tags.some(t => ["action", "thriller", "war", "violent"].includes(t))) moods.add("adrenaline");
+      if (tags.some(t => ["comedy", "music", "animation"].includes(t))) moods.add("delight me");
+      if (text.includes("devastat") || text.includes("trauma") || text.includes("grief") || text.includes("heartbreak")) moods.add("wreck me");
+      if (!moods.size) moods.add(type === "Documentary" ? "doc me" : "tender-knife");
+
+      if ((movie.runtime || 0) >= 135 || tags.includes("action") || tags.includes("thriller")) energy.add("high");
+      if ((movie.runtime || 0) < 100 || tags.includes("documentary") || tags.includes("comedy")) energy.add("low");
+      energy.add("medium");
+
+      return { moods: [...moods], energy: [...energy] };
+    }
+
+    function antiSlopPenalty(movie) {
+      let risk = 0;
+      const q = movie.quality || 0;
+      const votes = movie.voteCount || 0;
+      const text = `${movie.title} ${movie.overview || ""}`.toLowerCase();
+      const tags = movie.tags || [];
+
+      if (q < 7) risk += 30;
+      if (votes < 80) risk += 6;
+      if (text.includes("franchise") || text.includes("superhero")) risk += 14;
+      if (tags.includes("reality") || tags.includes("soap")) risk += 10;
+      if (tags.includes("documentary")) risk -= 4;
+      if (q >= 8) risk -= 6;
+      return Math.max(0, risk);
+    }
+
+    function computeScore(movie) {
+      const likes = tokenize(state.likesText);
+      const avoids = tokenize(state.avoidText);
+      const haystack = `${movie.title} ${movie.overview || ""} ${(movie.tags || []).join(" ")}`.toLowerCase();
+      let score = 0;
+
+      if ((movie.quality || 0) < state.qualityFloor) score -= 1000;
+
+      score += (movie.quality || 0) * 18;
+      score += Math.min(20, Math.log10((movie.voteCount || 10)) * 7);
+      score -= antiSlopPenalty(movie) * 2.5;
+
+      if ((movie.moods || []).includes(state.selectedMood)) score += 22;
+      if ((movie.energy || []).includes(state.selectedEnergy)) score += 10;
+
+      if ((movie.providers || []).some(p => state.selectedServices.includes(p))) score += 18;
+      else if (state.selectedServices.length) score -= 20;
+
+      likes.forEach(token => { if (haystack.includes(token)) score += 7; });
+      avoids.forEach(token => { if (haystack.includes(token)) score -= 12; });
+
+      (movie.tags || []).forEach(tag => { score += state.tasteProfile.tags[tag] || 0; });
+
+      if (state.tasteProfile.love[movie.id]) score -= 24;
+      if (state.tasteProfile.like[movie.id]) score -= 16;
+      if (state.tasteProfile.pass[movie.id]) score -= 30;
+      if (state.tasteProfile.neverAgain[movie.id]) score -= 220;
+
+      if (state.selectedMood === "doc me" && movie.type === "Documentary") score += 10;
+      return Math.round(score);
+    }
+
+    function explain(movie, label) {
+      const topTag = [...(movie.tags || [])].sort((a, b) => (state.tasteProfile.tags[b] || 0) - (state.tasteProfile.tags[a] || 0))[0];
+      let line = "Because this actually looks like a film someone made on purpose.";
+      if (movie.type === "Documentary" && state.selectedMood === "doc me") line = "Because you asked for a documentary and this one has actual filmmaking in its bloodstream.";
+      else if ((movie.moods || []).includes("weird me out") && state.selectedMood === "weird me out") line = "Because tonight seems to call for strangeness with intention, not decorative nonsense.";
+      else if ((movie.moods || []).includes("adrenaline") && state.selectedMood === "adrenaline") line = "Because this moves with real velocity and still keeps its brain switched on.";
+      else if ((movie.moods || []).includes("tender-knife")) line = "Because this looks capable of cutting the heart without turning into syrup.";
+
+      if (topTag && (state.tasteProfile.tags[topTag] || 0) > 2) line += ` Your taste memory also keeps circling ${topTag}.`;
+
+      const suffixMap = {
+        "Best Bet": "This is the strongest match for tonight.",
+        "Wild Card": "A slight left turn, but a smart one.",
+        "Safe but Excellent": "The reliable gem that still has teeth."
+      };
+      return `${line} ${suffixMap[label] || "A worthy pick."}`;
+    }
+
+    function updateTagAffinity(tags, delta) {
+      tags.forEach(tag => {
+        state.tasteProfile.tags[tag] = (state.tasteProfile.tags[tag] || 0) + delta;
+      });
+    }
+
+    function rememberMovie(movie) {
+      state.memoryMovies[movie.id] = movie;
+    }
+
+    function getRememberedMovie(id) {
+      return state.memoryMovies[id] || state.lastResults.find(x => x.id === Number(id)) || fallbackCatalog.find(x => x.id === Number(id));
+    }
+
+    function markReaction(itemId, reaction) {
+      const movie = getRememberedMovie(itemId);
+      if (!movie) return;
+      rememberMovie(movie);
+      state.tasteProfile.watched[itemId] = true;
+      delete state.tasteProfile.love[itemId];
+      delete state.tasteProfile.like[itemId];
+      delete state.tasteProfile.pass[itemId];
+      delete state.tasteProfile.neverAgain[itemId];
+
+      if (reaction === "love") { state.tasteProfile.love[itemId] = true; updateTagAffinity(movie.tags || [], 3); }
+      if (reaction === "like") { state.tasteProfile.like[itemId] = true; updateTagAffinity(movie.tags || [], 1); }
+      if (reaction === "pass") { state.tasteProfile.pass[itemId] = true; updateTagAffinity(movie.tags || [], -1); }
+      if (reaction === "neverAgain") { state.tasteProfile.neverAgain[itemId] = true; updateTagAffinity(movie.tags || [], -4); }
+
+      saveState();
+      renderTasteSummary();
+      renderTasteMemory();
+      renderHistoryDrawer();
+    }
+
+    async function fetchLiveCatalog() {
+      const status = document.getElementById("fetchStatus");
+      if (!state.authToken.trim()) {
+        status.className = "status warn";
+        status.textContent = "No TMDb token detected. Using fallback catalog.";
+        return fallbackCatalog;
+      }
+
+      try {
+        status.className = "status";
+        status.textContent = "Fetching live titles from TMDb...";
+
+        const discover = await fetchJson("/discover/movie", {
+          sort_by: "vote_average.desc",
+          include_adult: "false",
+          include_video: "false",
+          language: "en-US",
+          page: 1,
+          "vote_count.gte": 150,
+          "vote_average.gte": state.qualityFloor,
+          watch_region: state.region,
+          with_watch_providers: mapSelectedProvidersToTmdbIds().join("|") || undefined
+        });
+
+        const base = (discover.results || []).slice(0, 18);
+        const detailed = await Promise.all(base.map(async (item) => {
+          try {
+            const details = await fetchJson(`/movie/${item.id}`, { language: "en-US", append_to_response: "watch/providers" });
+            const regionData = details["watch/providers"]?.results?.[state.region] || {};
+            const providers = [
+              ...(regionData.flatrate || []),
+              ...(regionData.rent || []),
+              ...(regionData.buy || [])
+            ].map(p => normalizeProviderName(p.provider_name)).filter(Boolean);
+
+            const movie = {
+              id: details.id,
+              title: details.title,
+              year: Number((details.release_date || "").slice(0, 4)) || "",
+              runtime: details.runtime || 0,
+              quality: details.vote_average || 0,
+              voteCount: details.vote_count || 0,
+              providers: [...new Set(providers)],
+              genres: details.genres || [],
+              tags: guessTags({ title: details.title, overview: details.overview, genres: details.genres || [] }),
+              type: (details.genres || []).some(g => g.name === "Documentary") ? "Documentary" : "Film",
+              poster: details.backdrop_path || details.poster_path ? `https://image.tmdb.org/t/p/w780${details.backdrop_path || details.poster_path}` : "",
+              overview: details.overview || "No synopsis available.",
+              tmdbUrl: `https://www.themoviedb.org/movie/${details.id}`,
+              source: "tmdb"
+            };
+            const derived = inferMoodAndEnergy(movie);
+            movie.moods = derived.moods;
+            movie.energy = derived.energy;
+            return movie;
+          } catch {
+            return null;
+          }
+        }));
+
+        const cleaned = detailed.filter(Boolean);
+        status.className = cleaned.length ? "status ok" : "status warn";
+        status.textContent = cleaned.length
+          ? `Fetched ${cleaned.length} live titles from TMDb.`
+          : "TMDb returned no usable titles for that combination. Falling back to local catalog.";
+        return cleaned.length ? cleaned : fallbackCatalog;
+      } catch (err) {
+        status.className = "status bad";
+        status.textContent = `Live fetch failed (${err.message}). Falling back to local catalog.`;
+        return fallbackCatalog;
+      }
+    }
+
+    function mapSelectedProvidersToTmdbIds() {
+      const map = {
+        "Netflix": 8,
+        "Prime Video": 9,
+        "Hulu": 15,
+        "Max": 1899,
+        "Disney+": 337,
+        "MUBI": 11,
+        "Criterion Channel": 258,
+        "Apple TV+": 350
+      };
+      return state.selectedServices.map(s => map[s]).filter(Boolean);
+    }
+
+    async function recommend() {
+      const liveCatalog = await fetchLiveCatalog();
+      const ranked = liveCatalog
+        .map(movie => ({ ...movie, harryScore: computeScore(movie) }))
+        .filter(movie => movie.harryScore > 0)
+        .sort((a, b) => b.harryScore - a.harryScore)
+        .slice(0, 9);
+
+      const picks = [];
+      for (const movie of ranked) {
+        if (!picks.some(x => x.id === movie.id)) picks.push(movie);
+        if (picks.length === 3) break;
+      }
+
+      picks.forEach(rememberMovie);
+      state.lastResults = picks;
+      saveState();
+      renderTasteSummary();
+      renderResults(picks);
+      renderTasteMemory();
+      renderHistoryDrawer();
+    }
+
+    function renderTasteSummary() {
+      const el = document.getElementById("tasteSummaryArea");
+      const likedWords = tokenize(state.likesText);
+      const avoidedWords = tokenize(state.avoidText);
+      const topTags = Object.entries(state.tasteProfile.tags).sort((a,b) => b[1]-a[1]).slice(0,4).map(([t]) => t);
+      const moodspeak = state.selectedMood;
+      const energy = state.selectedEnergy;
+
+      let summary = `Tonight, Watch With Me is leaning toward <strong>${moodspeak}</strong> at a <strong>${energy}</strong> pace.`;
+      if (likedWords.length) summary += ` You’ve told it you love things like <strong>${likedWords.slice(0,5).join(", ")}</strong>.`;
+      if (topTags.length) summary += ` Your taste memory keeps lighting up around <strong>${topTags.join(", ")}</strong>.`;
+      if (avoidedWords.length) summary += ` It is also actively trying not to insult you with <strong>${avoidedWords.slice(0,4).join(", ")}</strong>.`;
+
+      el.innerHTML = `<div class="taste-summary"><h3>Why this, specifically?</h3><div class="mini" style="font-size:14px; line-height:1.7; color:var(--text);">${summary}</div></div>`;
+    }
+
+    function renderResults(picks) {
+      const area = document.getElementById("resultsArea");
+      if (!picks.length) {
+        area.innerHTML = `<div class="empty">Nothing good passed the anti-slop gate for this combination. Try lowering the threshold, changing services, or letting in a little more strange.</div>`;
+        return;
+      }
+
+      const labels = ["Best Bet", "Wild Card", "Safe but Excellent"];
+      area.innerHTML = `<div class="results-grid">${picks.map((movie, i) => {
+        const label = labels[i] || "Pick";
+        const poster = movie.poster
+          ? `<img src="${movie.poster}" alt="${movie.title} poster" />`
+          : `<div>${movie.title}</div>`;
+        const providers = movie.providers?.length ? movie.providers.join(", ") : "provider data unavailable";
+        return `
+          <article class="rec">
+            <div class="poster">${poster}</div>
+            <div class="rec-body">
+              <div class="topline">
+                <div>
+                  <div class="mini-badge" style="margin-bottom:10px; display:inline-flex;">${label}</div>
+                  <h3>${movie.title}</h3>
+                </div>
+                <div class="score-wrap">
+                  <div class="score-big">${movie.harryScore}</div>
+                  <div class="score-sub">Watch score</div>
+                </div>
+              </div>
+              <div class="meta">${movie.type} • ${movie.year || ""} • ${movie.runtime || "?"} min • TMDb ${Number(movie.quality || 0).toFixed(1)} • ${providers}</div>
+              <div class="reason">${movie.overview || "No overview available."}</div>
+              <div class="why"><strong>Why this, specifically?</strong> ${explain(movie, label)}</div>
+              <div class="chip-row">${(movie.tags || []).slice(0, 8).map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
+              <div class="rec-actions">
+                <button class="action primary" onclick="markReaction(${movie.id}, 'love')">Loved it</button>
+                <button class="action" onclick="markReaction(${movie.id}, 'like')">Liked it</button>
+                <button class="action ghost" onclick="markReaction(${movie.id}, 'pass')">Pass</button>
+                <button class="action ghost" onclick="markReaction(${movie.id}, 'neverAgain')">Never again</button>
+                ${movie.tmdbUrl ? `<a class="action ghost" href="${movie.tmdbUrl}" target="_blank" rel="noopener">Open TMDb</a>` : ""}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("")}</div>`;
+    }
+
+    function renderTasteMemory() {
+      const el = document.getElementById("tasteMemory");
+      const getTitles = (bucket) => Object.keys(state.tasteProfile[bucket]).map(id => getRememberedMovie(id)?.title).filter(Boolean);
+
+      const loved = getTitles("love");
+      const liked = getTitles("like");
+      const banned = getTitles("neverAgain");
+      const tags = Object.entries(state.tasteProfile.tags).sort((a,b) => b[1]-a[1]).slice(0,8);
+
+      const blocks = [];
+      if (loved.length) blocks.push(`<div class="memory-item"><div><strong>Loved</strong><div class="mini">${loved.join(", ")}</div></div><div>💛</div></div>`);
+      if (liked.length) blocks.push(`<div class="memory-item"><div><strong>Liked</strong><div class="mini">${liked.join(", ")}</div></div><div>✨</div></div>`);
+      if (banned.length) blocks.push(`<div class="memory-item"><div><strong>Absolutely not</strong><div class="mini">${banned.join(", ")}</div></div><div>🗡️</div></div>`);
+      if (tags.length) blocks.push(`<div class="memory-item"><div><strong>Taste signals</strong><div class="mini">${tags.map(([t,v]) => `${t} (${v})`).join(" • ")}</div></div><div>🧠</div></div>`);
+
+      el.innerHTML = blocks.length ? blocks.join("") : `<div class="memory-item"><div><strong>No memory yet</strong><div class="mini">Rate some recommendations and the app will start developing taste memory.</div></div><div>🎞️</div></div>`;
+    }
+
+    function renderHistoryDrawer() {
+      const drawer = document.getElementById("historyDrawer");
+      const btn = document.getElementById("toggleHistoryBtn");
+      if (!drawer || !btn) return;
+      btn.textContent = state.historyDrawerOpen ? "Close watch history" : "Open watch history";
+      drawer.style.display = state.historyDrawerOpen ? "block" : "none";
+      if (!state.historyDrawerOpen) return;
+
+      const historyItems = Object.keys(state.tasteProfile.watched)
+        .map(id => getRememberedMovie(id))
+        .filter(Boolean)
+        .slice(0, 18);
+
+      if (!historyItems.length) {
+        drawer.innerHTML = `<div class="empty">No watch history yet. Rate a few films and the drawer will start collecting them with posters.</div>`;
+        return;
+      }
+
+      drawer.innerHTML = `<div class="history-grid">${historyItems.map(movie => {
+        const reaction = state.tasteProfile.love[movie.id] ? "Loved" : state.tasteProfile.like[movie.id] ? "Liked" : state.tasteProfile.neverAgain[movie.id] ? "Never again" : state.tasteProfile.pass[movie.id] ? "Passed" : "Watched";
+        const poster = movie.poster ? `<img src="${movie.poster}" alt="${movie.title} poster" />` : `${movie.title}`;
+        return `<div class="history-card"><div class="history-poster">${poster}</div><div class="history-body"><div class="history-title">${movie.title}</div><div class="history-meta">${movie.year || ""} • ${movie.type || "Film"}<br />${reaction}</div></div></div>`;
+      }).join("")}</div>`;
+    }
+
+    function seedTaste() {
+      state.likesText = "Eternal Sunshine of the Spotless Mind, Poor Things, Bugonia, One Battle After Another, emotionally risky documentaries, feminine chaos, strange beauty, desert velocity, festival darlings";
+      state.avoidText = "algorithm bait, empty prestige, generic true crime, sentimental slop, flattened franchise mush";
+      state.selectedMood = "doc me";
+      state.selectedEnergy = "medium";
+      state.selectedServices = ["Netflix", "Max", "Hulu", "MUBI"];
+      state.qualityFloor = 7.5;
+      saveState();
+      syncInputs();
+      renderControls();
+      recommend();
+    }
+
+    function syncInputs() {
+      document.getElementById("authToken").value = state.authToken || "";
+      document.getElementById("regionSelect").value = state.region || "US";
+      document.getElementById("qualityFloor").value = String(state.qualityFloor || 7.5);
+      document.getElementById("likes").value = state.likesText || "";
+      document.getElementById("avoid").value = state.avoidText || "";
+      const authStatus = document.getElementById("authStatus");
+      if (state.authToken.trim()) {
+        authStatus.className = "status ok";
+        authStatus.textContent = "TMDb token saved locally in your browser. This demo only sends it to TMDb from your browser.";
+      } else {
+        authStatus.className = "status warn";
+        authStatus.textContent = "No token yet. The app can still show a local fallback catalog, but live results need a TMDb key.";
+      }
+    }
+
+    function renderControls() {
+      const moodWrap = document.getElementById("moodButtons");
+      moodWrap.innerHTML = moods.map(m => `<button class="pill-btn ${state.selectedMood === m ? "active" : ""}" data-mood="${m}">${m}</button>`).join("");
+      moodWrap.querySelectorAll("button").forEach(btn => btn.onclick = () => {
+        state.selectedMood = btn.dataset.mood;
+        saveState();
+        renderControls();
+      });
+
+      const energyWrap = document.getElementById("energyButtons");
+      energyWrap.innerHTML = energies.map(e => `<button class="pill-btn ${state.selectedEnergy === e ? "active" : ""}" data-energy="${e}">${e}</button>`).join("");
+      energyWrap.querySelectorAll("button").forEach(btn => btn.onclick = () => {
+        state.selectedEnergy = btn.dataset.energy;
+        saveState();
+        renderControls();
+      });
+
+      const serviceWrap = document.getElementById("serviceButtons");
+      serviceWrap.innerHTML = services.map(s => `<button class="service-btn ${state.selectedServices.includes(s) ? "active" : ""}" data-service="${s}">${s}</button>`).join("");
+      serviceWrap.querySelectorAll("button").forEach(btn => btn.onclick = () => {
+        const s = btn.dataset.service;
+        if (state.selectedServices.includes(s)) state.selectedServices = state.selectedServices.filter(x => x !== s);
+        else state.selectedServices.push(s);
+        saveState();
+        renderControls();
+      });
+    }
+
+    document.getElementById("authToken").addEventListener("input", (e) => {
+      state.authToken = e.target.value;
+      saveState();
+      syncInputs();
+    });
+    document.getElementById("regionSelect").addEventListener("change", (e) => { state.region = e.target.value; saveState(); });
+    document.getElementById("qualityFloor").addEventListener("change", (e) => { state.qualityFloor = Number(e.target.value); saveState(); });
+    document.getElementById("likes").addEventListener("input", (e) => { state.likesText = e.target.value; saveState(); renderTasteSummary(); });
+    document.getElementById("avoid").addEventListener("input", (e) => { state.avoidText = e.target.value; saveState(); renderTasteSummary(); });
+    document.getElementById("recommendBtn").addEventListener("click", recommend);
+    document.getElementById("surpriseBtn").addEventListener("click", () => {
+      state.selectedMood = moods[Math.floor(Math.random() * moods.length)];
+      state.selectedEnergy = energies[Math.floor(Math.random() * energies.length)];
+      saveState();
+      renderControls();
+      recommend();
+    });
+    document.getElementById("seedBtn").addEventListener("click", seedTaste);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      localStorage.removeItem("watchWithMeState");
+      state = structuredClone(defaultState);
+      syncInputs();
+      renderControls();
+      renderTasteSummary();
+      renderTasteMemory();
+      renderHistoryDrawer();
+      document.getElementById("resultsArea").innerHTML = `<div class="empty">Taste memory cleared. Ask Watch With Me what to watch tonight.</div>`;
+      document.getElementById("fetchStatus").textContent = "Reset complete. Live fetches use TMDb. Fallback mode uses a small built-in catalog.";
+    });
+    document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+      state.historyDrawerOpen = !state.historyDrawerOpen;
+      saveState();
+      renderHistoryDrawer();
+    });
+
+    syncInputs();
+    renderControls();
+    renderTasteSummary();
+    renderTasteMemory();
+    renderHistoryDrawer();
+  </script>
+</body>
+</html>
